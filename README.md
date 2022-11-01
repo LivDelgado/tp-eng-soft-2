@@ -1,10 +1,10 @@
-# TP Testes de software
-Trabalho prático da disciplina de Testes de Software. Sistemas de Informação UFMG - 2022/2
+# TP Engenharia de Software 2
+Trabalho prático da disciplina de Engenharia de Software. Sistemas de Informação UFMG - 2022/2
 
 
 # Grupo
 - Lívia Delgado
-- Luís Gustavo Costa
+- Pedro Luis Mucci
 
 # Sobre o sistema
 Sistema de lista de compras.
@@ -16,6 +16,7 @@ Indica onde comprar um item ou onde comprar uma lista inteira a partir de compar
 - Python 3.10
 - Typer - Python CLI
 - Pytest + Unittest
+- Lizard
 
 # Utilizando o App
 
@@ -42,4 +43,14 @@ pytest
 ```bash
 
 pygount --format=summary --suffix=py --folders-to-skip tests
+```
+
+- Executar lizard
+```bash
+lizard . -x"./tests/*"
+```
+
+Salvando relatório html
+```bash
+lizard . -x"./tests/*" -o lizard/report.html
 ```
