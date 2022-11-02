@@ -101,8 +101,8 @@ class Usuario:
         menor valor médio das compras por mercado
         """
 
-        compras_por_mercado = self.__agrupar_compras_realizadas_por_mercado(
-            lista_compras
+        compras_por_mercado = (
+            self.__agrupar_compras_realizadas_por_mercado_com_lista_base(lista_compras)
         )
 
         mercado_minimo_valor = self.__obter_mercado_com_menor_valor_medio_de_compras(
@@ -133,7 +133,7 @@ class Usuario:
 
         return mercado_minimo_valor
 
-    def __agrupar_compras_realizadas_por_mercado(
+    def __agrupar_compras_realizadas_por_mercado_com_lista_base(
         self, lista_compras: "ListaCompras"
     ) -> Dict:
         compras_por_mercado = {}
@@ -141,6 +141,14 @@ class Usuario:
         for compra in self.__compras_realizadas:
             if compra.lista_compras_base == lista_compras:
                 compras_por_mercado.setdefault(compra.mercado, []).append(compra)
+
+        return compras_por_mercado
+
+    def __agrupar_compras_realizadas_por_mercado(self) -> Dict:
+        compras_por_mercado = {}
+
+        for compra in self.__compras_realizadas:
+            compras_por_mercado.setdefault(compra.mercado, []).append(compra)
 
         return compras_por_mercado
 
@@ -159,30 +167,28 @@ class Usuario:
             mercado = item_mais_barato.mercado
 
         else:
-            preco_medio_por_mercado = {}
+            preco_medio_por_mercado = self.__obter_preco_medio_por_mercado()
 
-            for compra in self.__compras_realizadas:
-                if not preco_medio_por_mercado.get(compra.mercado):
-                    preco_medio_por_mercado[compra.mercado] = {
-                        "contador": 0,
-                        "valor_somado": 0,
-                    }
-
-                preco_medio_por_mercado[compra.mercado]["contador"] += len(
-                    compra.obter_itens_comprados()
-                )
-                preco_medio_por_mercado[compra.mercado][
-                    "valor_somado"
-                ] += compra.valor_total
-
-            valor_minimo = None
-            for mercado_i, info in preco_medio_por_mercado.items():
-                valor_medio = info["valor_somado"] / info["contador"]
-                if not valor_minimo or valor_medio < valor_minimo:
-                    mercado = mercado_i
-                    valor_minimo = valor_medio
+            mercado = min(
+                preco_medio_por_mercado, key=preco_medio_por_mercado.get, default=None
+            )
 
         return mercado
+
+    def __obter_preco_medio_por_mercado(self) -> Dict:
+        compras_por_mercado = self.__agrupar_compras_realizadas_por_mercado()
+
+        preco_medio_por_mercado = {}
+
+        for mercado, compras in compras_por_mercado.items():
+            total_de_itens_comprados = sum(
+                len(compra.obter_itens_comprados()) for compra in compras
+            )
+            valor_total_das_compras = sum(compra.valor_total for compra in compras)
+            preco_medio_por_mercado[mercado] = (
+                valor_total_das_compras / total_de_itens_comprados
+            )
+        return preco_medio_por_mercado
 
     def __listar_compras_que_incluiam_item(self, item: Item) -> List[Compra]:
         historico_compra_item = []

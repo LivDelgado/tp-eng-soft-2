@@ -89,3 +89,11 @@ Foi extraído um método para listar as compras que incluem um item.
 Além disso, foi utilizada uma função de um módulo padrão da linguagem para obter o item com preco mínimo dentre o histórico de compras.
 
 Isso reduziu a complexidade do método para 9.
+
+Foi criada então outra função para `__agrupar_compras_realizadas_por_mercado`, dessa vez sem utilizar o filtro de lista base.
+Apesar de duplicar parte do código, é interessante que essa função seja independente.
+
+Foi extraída a função `__obter_preco_medio_por_mercado` para calcular o preco médio dos itens por mercado.
+Essa lógica é complexa por si só, por isso o método apresenta complexidade ciclomática igual a 4.
+
+O restante das mudanças aqui foi uma simplificação para utilizar funções da linguagem para tornar os cálculos mais simples.
