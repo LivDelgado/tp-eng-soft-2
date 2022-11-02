@@ -1,8 +1,8 @@
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
-from typing import Dict, List, Optional
 from operator import attrgetter
+from typing import Dict, List, Optional
 
 from app.compra_realizada.compra import Compra
 from app.item.item import Item
