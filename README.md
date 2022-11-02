@@ -71,4 +71,15 @@ Além disso, a primeira condição do método não era necessária. Ela foi remo
 
 A complexidade resultante foi de 2 pontos pro método geral e 3 para o método privado gerado.
 
+## indicar_mercado_compra
+
+Foi extraído um método para agrupar as compras realizadas por mercado. Esse método também foi simplificado utilizando funções da própria linguagem.
+
+Foi extraído também a lógica para obter o mercado com o menor valor (calculado a partir das compras agrupadas) para um outro método, `__obter_mercado_com_menor_valor_medio_de_compras`. Nesse método, foi adicionada uma variável temporária (mercado_mais_em_conta) para melhorar a legibilidade - e dar mais visibilidade à regra de negócio.
+
+O resultado foi:
+- indicar_mercado_compra com 3 de Complexidade Ciclomática
+- __obter_mercado_com_menor_valor_medio_de_compras com 5
+- __agrupar_compras_realizadas_por_mercado com 3
+
 

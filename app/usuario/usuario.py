@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from app.compra_realizada.compra import Compra
 from app.item.item import Item
@@ -100,29 +100,48 @@ class Usuario:
         menor valor médio das compras por mercado
         """
 
-        compras_por_mercado = {}
+        compras_por_mercado = self.__agrupar_compras_realizadas_por_mercado(
+            lista_compras
+        )
 
-        for compra in self.__compras_realizadas:
-            if compra.lista_compras_base == lista_compras:
-                if not compras_por_mercado.get(compra.mercado):
-                    compras_por_mercado[compra.mercado] = []
+        mercado_minimo_valor = self.__obter_mercado_com_menor_valor_medio_de_compras(
+            compras_por_mercado
+        )
 
-                compras_por_mercado[compra.mercado].append(compra)
+        if not mercado_minimo_valor and self.__mercados:
+            mercado_minimo_valor = self.__mercados[0]
 
+        return mercado_minimo_valor
+
+    def __obter_mercado_com_menor_valor_medio_de_compras(
+        self, compras_por_mercado: Dict
+    ) -> Mercado:
         minimo_valor_compra = None
         mercado_minimo_valor = None
 
         for mercado, compras in compras_por_mercado.items():
             valor_medio = sum(compra.valor_total for compra in compras) / len(compras)
 
-            if not minimo_valor_compra or valor_medio < minimo_valor_compra:
+            mercado_mais_em_conta = not minimo_valor_compra or (
+                valor_medio < minimo_valor_compra
+            )
+
+            if mercado_mais_em_conta:
                 minimo_valor_compra = valor_medio
                 mercado_minimo_valor = mercado
 
-        if not mercado_minimo_valor and self.__mercados:
-            mercado_minimo_valor = self.__mercados[0]
-
         return mercado_minimo_valor
+
+    def __agrupar_compras_realizadas_por_mercado(
+        self, lista_compras: "ListaCompras"
+    ) -> Dict:
+        compras_por_mercado = {}
+
+        for compra in self.__compras_realizadas:
+            if compra.lista_compras_base == lista_compras:
+                compras_por_mercado.setdefault(compra.mercado, []).append(compra)
+
+        return compras_por_mercado
 
     def indicar_mercado_comprar_item(self, item: Item) -> Optional[Mercado]:
         if not self.__mercados and not self.__compras_realizadas:
