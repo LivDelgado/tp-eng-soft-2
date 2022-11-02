@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from typing import Dict, List, Optional
+from operator import attrgetter
 
 from app.compra_realizada.compra import Compra
 from app.item.item import Item
@@ -147,26 +148,16 @@ class Usuario:
         if not self.__mercados and not self.__compras_realizadas:
             return None
 
-        historico_compra_itens = []
-
-        for compra in self.__compras_realizadas:
-            itens_compra = compra.obter_itens_comprados()
-            historico_compra_itens += [
-                item_comprado
-                for item_comprado in itens_compra
-                if item_comprado.item == item
-            ]
+        historico_compra_item = self.__listar_compras_que_incluiam_item(item)
 
         mercado = None
 
-        if historico_compra_itens:
-            item_mais_barato = None
-
-            for compra_item in historico_compra_itens:
-                if not item_mais_barato or compra_item.preco < item_mais_barato.preco:
-                    item_mais_barato = compra_item
-
+        if historico_compra_item:
+            item_mais_barato = min(
+                historico_compra_item, key=attrgetter("preco"), default=None
+            )
             mercado = item_mais_barato.mercado
+
         else:
             preco_medio_por_mercado = {}
 
@@ -192,3 +183,16 @@ class Usuario:
                     valor_minimo = valor_medio
 
         return mercado
+
+    def __listar_compras_que_incluiam_item(self, item: Item) -> List[Compra]:
+        historico_compra_item = []
+
+        for compra in self.__compras_realizadas:
+            itens_compra = compra.obter_itens_comprados()
+            historico_compra_item += [
+                item_comprado
+                for item_comprado in itens_compra
+                if item_comprado.item == item
+            ]
+
+        return historico_compra_item

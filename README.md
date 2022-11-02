@@ -83,3 +83,9 @@ O resultado foi:
 - __agrupar_compras_realizadas_por_mercado com 3
 
 
+## indicar_mercado_comprar_item
+
+Foi extraído um método para listar as compras que incluem um item.
+Além disso, foi utilizada uma função de um módulo padrão da linguagem para obter o item com preco mínimo dentre o histórico de compras.
+
+Isso reduziu a complexidade do método para 9.
