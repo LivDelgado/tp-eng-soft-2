@@ -81,21 +81,17 @@ class Usuario:
     def obter_valor_compra_mais_cara(
         self, mercado: Mercado | None = None
     ) -> Decimal | None:
-        if not self.__compras_realizadas:
-            return None
-
         if mercado:
-            return max(
-                (
-                    compra.valor_total
-                    for compra in self.__compras_realizadas
-                    if compra.mercado == mercado
-                ),
-                default=None,
-            )
+            return self.__obter_valor_compra_mais_cara_do_mercado(mercado)
 
+    def __obter_valor_compra_mais_cara_do_mercado(self, mercado: Mercado) -> Decimal:
         return max(
-            (compra.valor_total for compra in self.__compras_realizadas), default=None
+            (
+                compra.valor_total
+                for compra in self.__compras_realizadas
+                if compra.mercado == mercado
+            ),
+            default=None,
         )
 
     def indicar_mercado_compra(self, lista_compras: "ListaCompras") -> Mercado:
