@@ -27,4 +27,39 @@ class TestComandosLista(TestCase):
 
         self.assertTrue("listaTeste" in result.stdout)
 
-    
+    def test_remover_listas_de_compras_WHEN_lista_inexistente_THEN_retorna_erro_lista_inexistente(self):
+        result = self.runner.invoke(app, ["listas", "remover", "teste"])
+
+        self.assertEqual("Essa lista não existe", str(result.exception))
+
+    def test_remover_listas_de_compras_WHEN_lista_existente_THEN_remove_lista(self):
+        result = self.runner.invoke(
+            app,
+            ["listas", "adicionar", "teste"],
+            input="Cafe\nN\n"
+        )
+        result = self.runner.invoke(app, ["listas", "listar"])
+        self.assertTrue("teste" in result.stdout)
+
+        result = self.runner.invoke(app, ["listas", "remover", "teste"])
+
+        result = self.runner.invoke(app, ["listas", "listar"])
+        self.assertFalse("teste" in result.stdout)
+
+    def test_ver_itens_lista_WHEN_lista_inexistente_THEN_retorna_mensagem_lista_inexistente(self):
+        result = self.runner.invoke(app, ["listas", "itens", "listar", "itensListaTeste"])
+
+        self.assertEqual("Essa lista não existe", str(result.exception))
+
+    def test_ver_itens_lista_WHEN_lista_existente_THEN_retorna_itens_lista(self):
+        result = self.runner.invoke(
+            app,
+            ["listas", "adicionar", "itensListaTeste"],
+            input="Cafe\ny\nLeite\nN\n"
+        )
+
+        result = self.runner.invoke(app, ["listas", "itens", "listar", "itensListaTeste"])
+        print(result)
+
+        self.assertTrue("Cafe" in result.stdout)
+        self.assertTrue("Leite" in result.stdout)

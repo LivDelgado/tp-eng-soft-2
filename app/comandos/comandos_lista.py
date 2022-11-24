@@ -43,7 +43,9 @@ def remover_lista_de_compras(nome: str):
 @itens_app.command("listar")
 def ver_itens_lista(nome: str):
     usuario = UsuarioService.obter_usuario_salvo_ou_criar_default()
-    ListaService.listar_itens(usuario, nome)
+    itens = ListaService.listar_itens(usuario, nome)
+    for item in itens:
+        print(item)
 
 
 @itens_app.command("adicionar")
